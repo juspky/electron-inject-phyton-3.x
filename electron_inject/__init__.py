@@ -64,14 +64,14 @@ class ElectronRemoteDebugger(object):
 
     def requests_get(self, url, tries=5, delay=1):
         last_exception = None
-        for _ in xrange(tries):
+        for _ in range(tries):
             try:
                 return requests.get(url)
-            except requests.exceptions.ConnectionError, ce:
+            except requests.exceptions.ConnectionError as ce:
                 # ignore it
                 last_exception = ce
             time.sleep(delay)
-        raise ce
+        raise last_exception
 
 
     def sendrcv(self, w, msg):
@@ -93,8 +93,8 @@ class ElectronRemoteDebugger(object):
         ret = json.loads(w['ws'].sendrcv(json.dumps(data)))
         if "result" not in ret:
             return ret
-        if ret['result']['wasThrown']:
-            raise Exception(ret['result']['result'])
+        #if ret['result']['wasThrown']:
+         #   raise Exception(ret['result']['result'])
         return ret['result']
 
     @classmethod
@@ -105,13 +105,13 @@ class ElectronRemoteDebugger(object):
         sock.close()
 
         cmd = "%s %s" % (path, "--remote-debugging-port=%d" % port)
-        print cmd
+        print(cmd)
         p = subprocess.Popen(cmd, shell=True)
-        if not p>0:
-            raise Exception("Could not execute cmd: %r"%cmd)
+        #if not p>0:
+         #   raise Exception("Could not execute cmd: %r"%cmd)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        for _ in xrange(30):
+        for _ in range(30):
             result = sock.connect_ex(('localhost', port))
             if result > 0:
                 break
@@ -122,4 +122,4 @@ class ElectronRemoteDebugger(object):
 if __name__ == "__main__":
     erb = ElectronRemoteDebugger("localhost", 8888)
     for w in erb.windows():
-        print erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH)
+        print(erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH))
