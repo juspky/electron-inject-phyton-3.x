@@ -17,6 +17,7 @@ or
     $ python setup.py install
     
 if something related to websockets does not work you also need to run
+
     $ pip install websocket-client
     
 # usage
